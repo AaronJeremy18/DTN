@@ -1,0 +1,72 @@
+<template>
+    <lightning-card title="Manage Price Book Entries">
+        <!--lightning-button label="Save" slot="actions" onclick={saveEntries}></lightning-button-->
+        <!--<p class="slds-p-horizontal_small">Card Body (custom component)</p>-->
+        <div class="slds-var-m-around_medium">
+            <template if:true={pbEntries}>
+                <lightning-layout>
+                    <lightning-layout-item size="1" padding="around-small" class="slds-text-title_bold">
+                        <p>Select</p>
+                    </lightning-layout-item>
+                    <lightning-layout-item size="4" padding="around-small" class="slds-text-title_bold">
+                        <p>Price Book Name</p>
+                    </lightning-layout-item>
+                    <lightning-layout-item size="2" padding="around-small" class="slds-text-title_bold">
+                        <p>ISO Code</p>
+                    </lightning-layout-item>
+                    <lightning-layout-item size="3" padding="around-small" class="slds-text-title_bold">
+                        <p>List Price</p>
+                    </lightning-layout-item>
+                    <lightning-layout-item size="2" padding="around-small" class="slds-text-title_bold">
+                        <p>isActive</p>
+                    </lightning-layout-item>
+                </lightning-layout>
+                <div class="slds-card">
+                    <template for:each={pbEntries} for:item="pbe">
+                        <lightning-layout key={pbe.key}>
+                            <lightning-layout-item size="1" padding="around-small">
+                                <template if:true={pbe.isSelected}>
+                                    <lightning-input type="checkbox" variant="label-hidden" name="isSelected" checked data-key={pbe.key} onchange={changeSelectionChkbox}></lightning-input>
+                                </template>
+                                <template if:false={pbe.isSelected}>
+                                    <lightning-input type="checkbox" variant="label-hidden" name="isSelected" data-key={pbe.key} onchange={changeSelectionChkbox}></lightning-input>
+                                </template>
+                            </lightning-layout-item>
+                            <lightning-layout-item size="4" padding="around-small">
+                                <p>{pbe.pricebookName}</p>
+                            </lightning-layout-item>
+                            <lightning-layout-item size="2" padding="around-small">
+                                <p>{pbe.currencyIsoCode}</p>
+                            </lightning-layout-item>
+                            <lightning-layout-item size="4" padding="around-small">
+                                <template if:true={pbe.isUSD} >
+                                    <lightning-helptext content="Please enter values here. Auto-converted values for other currencies will appear upon entering value in USD"></lightning-helptext>
+                                    <lightning-input class="--slds-c-input-spacing-vertical-start" type="number" variant="label-hidden" data-iso={pbe.currencyIsoCode} name={pbe.pricebookId} value={pbe.unitPrice} onchange={calculateConversionRates}></lightning-input>
+                                </template>
+                                <template if:false={pbe.isUSD} >
+                                    <lightning-input disabled="true" type="number" variant="label-hidden" data-iso={pbe.currencyIsoCode} name={pbe.pricebookId} value={pbe.unitPrice} onchange={calculateConversionRates}></lightning-input>
+                                </template>
+                            </lightning-layout-item>
+                            <lightning-layout-item size="2" padding="around-small">
+                                <template if:true={pbe.isActive}>
+                                    <lightning-input type="checkbox" variant="label-hidden" name="isActive" checked data-key={pbe.key} onchange={changeActiveChkbox}></lightning-input>
+                                </template>
+                                <template if:false={pbe.isActive}>
+                                    <lightning-input type="checkbox" variant="label-hidden" name="isActive" data-key={pbe.key} onchange={changeActiveChkbox}></lightning-input>
+                                </template>
+                            </lightning-layout-item>
+                        </lightning-layout>
+                    </template>
+                </div>
+            </template>
+            <!--<template if:true={error}>
+                <p>{error}</p>
+            </template>-->
+            <template if:false={loaded}>
+                <lightning-spinner alternative-text="Loading"></lightning-spinner>
+            </template>
+            
+        </div>
+        <lightning-button slot="footer" variant="brand" label="Save" onclick={saveEntries}></lightning-button>
+    </lightning-card>
+</template>

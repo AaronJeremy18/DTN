@@ -1,0 +1,72 @@
+<template>
+  <lightning-card>
+    <h3 slot='title'>Parent Cases Report</h3>
+    <div class="slds-dropdown-trigger slds-dropdown-trigger_click slds-m-horizontal_xxx-small" slot="actions">
+      <lightning-button-icon onclick={handleDropdown} variant={menuVariant.Search} icon-name="utility:search"
+        alternative-text="Search" title="Search" value="Search"></lightning-button-icon>
+      <div class="slds-dropdown slds-dropdown_right slds-dropdown_small slds-p-around_small">
+        <lightning-input type="search" name="search" onchange={handleInputChange} onkeyup={handleKeyUp}
+          class="slds-m-around_xx-small" label="Search" placeholder="Search by Parent Cases"></lightning-input>
+      </div>
+    </div>
+    <div class="slds-dropdown-trigger slds-dropdown-trigger_click slds-m-horizontal_xxx-small" slot="actions">
+      <lightning-button-icon onclick={handleDropdown} variant={menuVariant.Filter} icon-name="utility:filterList"
+        alternative-text="Filter" title="Filter" value="Filter"></lightning-button-icon>
+      <div class="slds-dropdown slds-dropdown_right slds-dropdown_medium slds-p-around_small slds-grid_align-end ">
+        <div class="slds-text-heading_small">Filter Date</div>
+        <lightning-input onchange={handleFrom} type="date" label="From" name="from" value={from}
+          class="slds-m-around_xx-small"></lightning-input>
+        <lightning-input onchange={handleTo} type="date" label="To" name="to" value={to}
+          class="slds-m-around_xx-small"></lightning-input>
+        <lightning-button onclick={handleFind} label="Apply"
+          class="slds-float_right slds-m-around_small"></lightning-button>
+      </div>
+    </div>
+    <lightning-button-icon class="slds-m-horizontal_xxx-small" onclick={handleFind} icon-name="utility:refresh"
+      alternative-text="Refresh" title="Refresh" slot="actions"></lightning-button-icon>
+    <div class="slds-scrollable slds-theme_shade" style={adjustHeight}>
+      <template if:true={isLoading}>
+        <lightning-spinner alternative-text="Loading"></lightning-spinner>
+      </template>
+      <template if:false={isLoading}>
+        <c-parent-cases-report-table table-data={caseData} columns={columns} time-zone ={timeZone}
+          onsort={handleSort}></c-parent-cases-report-table>
+      </template>
+    </div>
+    <div slot="footer">
+      <lightning-layout vertical-align="center">
+        <lightning-layout-item>
+          <lightning-button label="Previous" icon-name="utility:chevronleft"
+            onclick={handlePrevious} disabled={isFirst}></lightning-button>
+        </lightning-layout-item>
+        <lightning-layout-item>
+          <lightning-button label="First Page" icon-name="utility:chevronleft"
+            onclick={handleFirst} disabled={isFirst}></lightning-button>
+        </lightning-layout-item>
+        <lightning-layout-item>&nbsp;&nbsp;Page Size:&nbsp;&nbsp;</lightning-layout-item>
+        <lightning-layout-item>
+          <select class="slds-select slds-text-color_success" name="optionSelect" onchange={handlePageSize}>
+            <option value=10>10</option>
+            <option value=25>25</option>
+            <option value=50>50</option>
+          </select>
+        </lightning-layout-item>
+        <lightning-layout-item>&nbsp;&nbsp;Page Number:&nbsp;&nbsp;</lightning-layout-item>
+        <lightning-layout-item>
+          <lightning-input class="slds-size_xx-small" type="number" value={pageNumber} variant="label-hidden" onkeyup={handleKeyUpPageNumber}></lightning-input>
+        </lightning-layout-item>
+        <lightning-layout-item>&nbsp;Of {lastPageNumber}&nbsp;&nbsp;</lightning-layout-item>
+        <lightning-layout-item flexibility="grow"></lightning-layout-item>
+        <lightning-layout-item>&nbsp;&nbsp;Total Number of Parent Cases: {totalCount}&nbsp;&nbsp;</lightning-layout-item>
+        <lightning-layout-item>
+          <lightning-button label="Last Page" icon-name="utility:chevronright" icon-position="right"
+            onclick={handleLastPage} disabled={isLast}></lightning-button>
+        </lightning-layout-item>
+        <lightning-layout-item>
+          <lightning-button label="Next" icon-name="utility:chevronright" icon-position="right"
+            onclick={handleNext} disabled={isLast}></lightning-button>
+        </lightning-layout-item>
+      </lightning-layout>
+    </div>
+  </lightning-card>
+</template>

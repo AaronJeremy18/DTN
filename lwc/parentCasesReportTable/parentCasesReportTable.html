@@ -1,0 +1,98 @@
+<template>
+  <table class="slds-table slds-table_bordered slds-table_col-bordered slds-no-row-hover">
+    <thead>
+      <tr>
+        
+      <template for:each={columns} for:item="columnItem">
+        <template lwc:if={columnItem.value}>
+          <th key={columnItem.value}>
+            <lightning-layout horizontal-align="spread">
+              <lightning-layout-item>
+                {columnItem.label}&nbsp;<lightning-icon class={columnItem.iconClass} icon-name={columnItem.iconName} size="xx-small"></lightning-icon>
+              </lightning-layout-item>
+              <lightning-layout-item>
+                &nbsp;
+                <lightning-button-menu variant="border-filled" icon-size="xx-small" menu-alignment="right">
+                  <lightning-menu-item value={columnItem.value} data-order=false data-parent={columnItem.isParent} label="Sort Ascending" onclick={handleSort}></lightning-menu-item>
+                  <lightning-menu-item value={columnItem.value} data-order=true data-parent={columnItem.isParent} label="Sort Descending" onclick={handleSort}></lightning-menu-item>
+                </lightning-button-menu>
+              </lightning-layout-item>
+            </lightning-layout>
+          </th>
+        </template>
+        <template lwc:else>
+          <th key={columnItem.label}>
+            {columnItem.label}
+          </th>
+        </template>
+      </template>
+        
+      </tr>
+    </thead>
+    <tbody>
+      <template for:each={tableData} for:item="parentCase">
+        <template iterator:it={parentCase.childCases}>
+          <tr key={it.value.id}>
+            <template lwc:if={it.first}>
+              <td rowspan={parentCase.childCases.length} class="slds-theme_shade" valign="top">
+                <lightning-formatted-url value={parentCase.url} label={parentCase.caseNumber}></lightning-formatted-url>
+              </td>
+              <td rowspan={parentCase.childCases.length} class="slds-theme_shade" valign="top">
+                <ul class="slds-list_dotted">
+                  <li>
+                    <template for:each={parentCase.caseComments} for:item="caseComments">
+                      <p key={caseComments.id} class="slds-cell-wrap slds-size_medium"><lightning-formatted-text value={caseComments.CommentBody}
+                          linkify></lightning-formatted-text></p>
+                    </template>
+                  </li>
+                </ul>
+              </td>
+              <td rowspan={parentCase.childCases.length} class="slds-theme_shade" valign="top">
+                <lightning-formatted-date-time value={parentCase.createdDate} year="numeric" month="numeric"
+                  day="numeric" hour="2-digit" minute="2-digit" time-zone={timeZone}></lightning-formatted-date-time>
+              </td>
+            </template>
+            <td class="slds-border_left">
+              <lightning-formatted-url value={it.value.url} label={it.value.caseNumber}></lightning-formatted-url>
+            </td>
+            <td>
+              <lightning-formatted-date-time value={it.value.createdDate} year="numeric" month="numeric" day="numeric"
+                hour="2-digit" minute="2-digit" time-zone={timeZone}></lightning-formatted-date-time>
+            </td>
+            <td>
+              <lightning-formatted-date-time value={it.value.lastModifiedDate} year="numeric" month="numeric"
+                day="numeric" hour="2-digit" minute="2-digit" time-zone={timeZone}></lightning-formatted-date-time>
+            </td>
+            <td>
+              <lightning-formatted-url value={it.value.url} label={it.value.subject}></lightning-formatted-url>
+            </td>
+            <td>
+              <lightning-formatted-number value={it.value.age}></lightning-formatted-number>
+            </td>
+            <td>
+              <lightning-formatted-number value={it.value.dtnAge}></lightning-formatted-number>
+            </td>
+            <td>
+              <template if:true={it.value.open}>
+                <lightning-icon icon-name="utility:check" alternative-text="true" size="xx-small"></lightning-icon>
+              </template>
+            </td>
+            <td>
+              <template if:true={it.value.closed}>
+                <lightning-icon icon-name="utility:check" alternative-text="true" size="xx-small"></lightning-icon>
+              </template>
+            </td>
+            <td>
+              <template if:true={it.value.accountName}>
+              <lightning-formatted-url value={it.value.accountUrl} label={it.value.accountName}></lightning-formatted-url>
+              </template>
+            </td>
+            <td>
+              <lightning-formatted-number value={it.value.totalContractValue} format-style="currency" currency-code={it.value.currencyIsoCode} currency-display-as="code"></lightning-formatted-number>
+            </td>
+          </tr>
+        </template>
+      </template>
+    </tbody>
+  </table>
+</template>
